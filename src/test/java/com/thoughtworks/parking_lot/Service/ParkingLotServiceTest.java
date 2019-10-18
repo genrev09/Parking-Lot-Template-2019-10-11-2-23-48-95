@@ -99,6 +99,30 @@ public class ParkingLotServiceTest {
 
         when(parkingLotRepository.findByName("Genrev")).thenReturn(parkingLot);
 
-        Assertions.assertThat(parkingLotService.getParkingLotByName("Genrev")).isEqualTo(parkingLot);
+        Assertions.assertThat(parkingLotService.getParkingLotByName("Genrev"))
+                .isEqualToComparingFieldByField(parkingLot);
     }
+
+    @Test
+    public void should_update_parking_lot_capacity() {
+        ParkingLot updatedParkingLotCapacity = new ParkingLot();
+        updatedParkingLotCapacity.setCapacity(5);
+
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Genrev");
+        parkingLot.setCapacity(1);
+        parkingLot.setLocation("Santa Rosa");
+
+        ParkingLot updatedParkingLot = new ParkingLot();
+        updatedParkingLot.setName("Genrev");
+        updatedParkingLot.setCapacity(5);
+        updatedParkingLot.setLocation("Santa Rosa");
+
+        when(parkingLotRepository.findByName("Genrev")).thenReturn(parkingLot);
+
+        Assertions.assertThat(parkingLotService.updateParkingLotCapacity("Genrev",updatedParkingLotCapacity))
+                .isEqualToComparingFieldByField(updatedParkingLot);
+    }
+
+
 }

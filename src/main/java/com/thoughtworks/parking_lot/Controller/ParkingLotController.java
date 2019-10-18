@@ -42,4 +42,12 @@ public class ParkingLotController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PatchMapping(path = "/{name}", headers = {"Content-type=application/json"})
+    public ResponseEntity getParkingLotByName(@PathVariable("name") String name,
+                                              @RequestBody ParkingLot updatedParkingLotCapacity){
+        ParkingLot updatedParkingLot = parkingLotService.updateParkingLotCapacity(name,updatedParkingLotCapacity);
+        if (updatedParkingLot != null)
+            return new ResponseEntity<>(updatedParkingLot,HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

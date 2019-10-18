@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,6 +48,7 @@ public class ParkingLotControllerTest {
         ResultActions result = mockMvc.perform(post("/parkinglots")
                 .content(objectMapper.writeValueAsString(new ParkingLot()))
                 .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isCreated());
     }
 
@@ -56,6 +58,7 @@ public class ParkingLotControllerTest {
         ResultActions result = mockMvc.perform(post("/parkinglots")
                 .content(objectMapper.writeValueAsString(null))
                 .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isBadRequest());
     }
 
@@ -64,6 +67,7 @@ public class ParkingLotControllerTest {
         when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(true);
         ResultActions result = mockMvc.perform(delete("/parkinglots/{name}", "Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isOk());
     }
 
@@ -72,6 +76,7 @@ public class ParkingLotControllerTest {
         when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(false);
         ResultActions result = mockMvc.perform(delete("/parkinglots/{name}", "Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isBadRequest());
     }
 
@@ -89,6 +94,7 @@ public class ParkingLotControllerTest {
         when(parkingLotService.getAllParkingLot(0,15)).thenReturn(parkingLotPage);
         ResultActions result = mockMvc.perform(get("/parkinglots")
                 .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isOk())
         .andExpect(jsonPath("$.content[0].location",is(parkingLot.getLocation())))
         .andExpect(jsonPath("$.content[0].name",is(parkingLot.getName())));
@@ -104,6 +110,7 @@ public class ParkingLotControllerTest {
         when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(parkingLot);
         ResultActions result = mockMvc.perform(get("/parkinglots/{name}","Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.location",is(parkingLot.getLocation())))
                 .andExpect(jsonPath("$.name",is(parkingLot.getName())));
@@ -119,6 +126,40 @@ public class ParkingLotControllerTest {
         when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(null);
         ResultActions result = mockMvc.perform(get("/parkinglots/{name}","Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void should_update_parking_lot_capacity() throws Exception {
+        ParkingLot updatedParkingLotCapacity = new ParkingLot();
+        updatedParkingLotCapacity.setCapacity(5);
+
+        ParkingLot updatedParkingLot = new ParkingLot();
+        updatedParkingLot.setName("Genrev");
+        updatedParkingLot.setCapacity(5);
+        updatedParkingLot.setLocation("Santa Rosa");
+
+        when(parkingLotService.updateParkingLotCapacity(anyString(),any())).thenReturn(updatedParkingLot);
+        ResultActions result = mockMvc.perform(patch("/parkinglots/{name}","Genrev")
+                .content(objectMapper.writeValueAsString(updatedParkingLotCapacity))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk())
+        .andExpect(jsonPath("$.capacity", is(updatedParkingLot.getCapacity())))
+        .andExpect(jsonPath("$.name", is(updatedParkingLot.getName())));
+    }
+
+    @Test
+    public void should_not_update_parking_lot_capacity_when_invalid_name() throws Exception {
+        ParkingLot updatedParkingLotCapacity = new ParkingLot();
+        updatedParkingLotCapacity.setCapacity(5);
+
+        when(parkingLotService.updateParkingLotCapacity(anyString(),any())).thenReturn(null);
+        ResultActions result = mockMvc.perform(patch("/parkinglots/{name}","Genrev")
+                .content(objectMapper.writeValueAsString(updatedParkingLotCapacity))
+                .contentType(MediaType.APPLICATION_JSON));
+
         result.andExpect(status().isNotFound());
     }
 }
