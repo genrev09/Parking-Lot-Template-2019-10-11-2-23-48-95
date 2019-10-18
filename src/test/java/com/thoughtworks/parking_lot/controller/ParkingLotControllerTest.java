@@ -39,4 +39,13 @@ public class ParkingLotControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
         result.andExpect(status().isCreated());
     }
+
+    @Test
+    public void should_not_add_parking_lot_when_invalid_parking_lot() throws Exception {
+        when(parkingLotService.addParkingLot(any())).thenReturn(false);
+        ResultActions result = mockMvc.perform(post("/parkinglot")
+                .content(new ObjectMapper().writeValueAsString(null))
+                .contentType(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isBadRequest());
+    }
 }
