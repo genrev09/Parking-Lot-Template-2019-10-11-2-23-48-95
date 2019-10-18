@@ -2,6 +2,7 @@ package com.thoughtworks.parking_lot.Service;
 
 import com.thoughtworks.parking_lot.Repository.ParkingLotRepository;
 import com.thoughtworks.parking_lot.core.ParkingLot;
+import javassist.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -104,7 +105,7 @@ public class ParkingLotServiceTest {
     }
 
     @Test
-    public void should_update_parking_lot_capacity() {
+    public void should_update_parking_lot_capacity() throws NotFoundException {
         ParkingLot updatedParkingLotCapacity = new ParkingLot();
         updatedParkingLotCapacity.setCapacity(5);
 

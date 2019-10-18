@@ -2,6 +2,7 @@ package com.thoughtworks.parking_lot.Service;
 
 import com.thoughtworks.parking_lot.Repository.ParkingLotRepository;
 import com.thoughtworks.parking_lot.core.ParkingLot;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ParkingLotService {
+    public static final String INVALID_NAME = "Parking lot name does not exists!";
 
     @Autowired
     ParkingLotRepository parkingLotRepository;
@@ -36,13 +38,13 @@ public class ParkingLotService {
         return parkingLotRepository.findByName(name);
     }
 
-    public ParkingLot updateParkingLotCapacity(String name, ParkingLot updatedParkingLot) {
+    public ParkingLot updateParkingLotCapacity(String name, ParkingLot updatedParkingLot) throws NotFoundException {
         ParkingLot parkingLot = parkingLotRepository.findByName(name);
         if (parkingLot != null) {
             parkingLot.setCapacity(updatedParkingLot.getCapacity());
             parkingLotRepository.save(parkingLot);
             return parkingLot;
         }
-        return null;
+        throw new NotFoundException(INVALID_NAME);
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.parking_lot.Controller.ParkingLotController;
 import com.thoughtworks.parking_lot.Service.ParkingLotService;
 import com.thoughtworks.parking_lot.core.ParkingLot;
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,7 +156,7 @@ public class ParkingLotControllerTest {
         ParkingLot updatedParkingLotCapacity = new ParkingLot();
         updatedParkingLotCapacity.setCapacity(5);
 
-        when(parkingLotService.updateParkingLotCapacity(anyString(),any())).thenReturn(null);
+        when(parkingLotService.updateParkingLotCapacity(anyString(),any())).thenThrow(NotFoundException.class);
         ResultActions result = mockMvc.perform(patch("/parkinglots/{name}","Genrev")
                 .content(objectMapper.writeValueAsString(updatedParkingLotCapacity))
                 .contentType(MediaType.APPLICATION_JSON));

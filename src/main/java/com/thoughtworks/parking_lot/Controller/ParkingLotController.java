@@ -2,6 +2,7 @@ package com.thoughtworks.parking_lot.Controller;
 
 import com.thoughtworks.parking_lot.Service.ParkingLotService;
 import com.thoughtworks.parking_lot.core.ParkingLot;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/parkinglots")
 public class ParkingLotController {
+
     private final int pageSize = 15;
     @Autowired
     ParkingLotService parkingLotService;
@@ -43,11 +45,9 @@ public class ParkingLotController {
     }
 
     @PatchMapping(path = "/{name}", headers = {"Content-type=application/json"})
-    public ResponseEntity getParkingLotByName(@PathVariable("name") String name,
-                                              @RequestBody ParkingLot updatedParkingLotCapacity){
-        ParkingLot updatedParkingLot = parkingLotService.updateParkingLotCapacity(name,updatedParkingLotCapacity);
-        if (updatedParkingLot != null)
-            return new ResponseEntity<>(updatedParkingLot,HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @ResponseStatus(code = HttpStatus.OK)
+    public ParkingLot updateParkingLotCapacity(@PathVariable("name") String name,
+                                              @RequestBody ParkingLot updatedParkingLotCapacity) throws NotFoundException {
+        return parkingLotService.updateParkingLotCapacity(name,updatedParkingLotCapacity);
     }
 }
