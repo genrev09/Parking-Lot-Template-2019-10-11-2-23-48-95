@@ -1,9 +1,6 @@
 
 package com.thoughtworks.parking_lot.core;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ParkingLot {
@@ -14,6 +11,7 @@ public class ParkingLot {
 
     private String location;
     private int capacity;
+    @Column(unique = true)
     private String name;
 
     public void setLocation(String location) {

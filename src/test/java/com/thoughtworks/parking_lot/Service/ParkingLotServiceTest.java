@@ -1,7 +1,6 @@
-package com.thoughtworks.parking_lot;
+package com.thoughtworks.parking_lot.Service;
 
 import com.thoughtworks.parking_lot.Repository.ParkingLotRepository;
-import com.thoughtworks.parking_lot.Service.ParkingLotService;
 import com.thoughtworks.parking_lot.core.ParkingLot;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -23,6 +22,7 @@ public class ParkingLotServiceTest {
     @Autowired
     private ParkingLotService parkingLotService;
 
+    @Autowired ParkingLotRepository parkingLotRepository2;
 
     @Test
     public void should_add_parking_lot() {
@@ -36,5 +36,21 @@ public class ParkingLotServiceTest {
 
         Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(true);
     }
+
+//    @Test
+//    public void should_not_add_existing_parking_lot_name() {
+//
+//        ParkingLot parkingLot = new ParkingLot();
+//        parkingLot.setName("Genrev");
+//        parkingLot.setCapacity(1);
+//        parkingLot.setLocation("Santa Rosa");
+//
+//        ParkingLot parkingLot1 = parkingLotRepository2.save(parkingLot);
+//        ParkingLot parkingLot2 = parkingLotRepository2.save(parkingLot);
+//        List<ParkingLot> parkingLotList = parkingLotRepository2.findAll();
+////        when(parkingLotRepository.save(parkingLot)).thenReturn(parkingLot);
+//
+//        Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(true);
+//    }
 
 }
