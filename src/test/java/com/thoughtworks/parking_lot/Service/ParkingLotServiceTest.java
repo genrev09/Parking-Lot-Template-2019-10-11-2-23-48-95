@@ -8,6 +8,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -71,4 +74,19 @@ public class ParkingLotServiceTest {
         Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(false);
     }
 
+    @Test
+    public void should_get_all_parking_lot() {
+        List<ParkingLot> parkingLotList = new ArrayList<>();
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Genrev");
+        parkingLot.setCapacity(1);
+        parkingLot.setLocation("Santa Rosa");
+
+        parkingLotList.add(parkingLot);
+        Page<ParkingLot> parkingLotPage = new PageImpl<>(parkingLotList);
+
+        when(parkingLotRepository.findAll(PageRequest.of(0,15))).thenReturn(parkingLotPage);
+
+        Assertions.assertThat(parkingLotService.getAllParkingLot(0,15)).isEqualTo(parkingLotPage);
+    }
 }

@@ -3,9 +3,9 @@ package com.thoughtworks.parking_lot.Service;
 import com.thoughtworks.parking_lot.Repository.ParkingLotRepository;
 import com.thoughtworks.parking_lot.core.ParkingLot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ParkingLotService {
@@ -26,5 +26,9 @@ public class ParkingLotService {
             return true;
         }
         return false;
+    }
+
+    public Page<ParkingLot> getAllParkingLot(int page, int pagesize){
+        return parkingLotRepository.findAll(PageRequest.of(page,pagesize));
     }
 }

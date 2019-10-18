@@ -3,6 +3,7 @@ package com.thoughtworks.parking_lot.Controller;
 import com.thoughtworks.parking_lot.Service.ParkingLotService;
 import com.thoughtworks.parking_lot.core.ParkingLot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/parkinglots")
 public class ParkingLotController {
-
+    private final int pageSize = 15;
     @Autowired
     ParkingLotService parkingLotService;
 
@@ -26,6 +27,11 @@ public class ParkingLotController {
         if (parkingLotService.deleteParkingLot(name))
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(headers = {"Content-type=application/json"})
+    public Page<ParkingLot> getAllParkingLot(@RequestParam(required = false, defaultValue = "0") int page){
+        return parkingLotService.getAllParkingLot(page,pageSize);
     }
 
 }
