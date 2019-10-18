@@ -89,4 +89,16 @@ public class ParkingLotServiceTest {
 
         Assertions.assertThat(parkingLotService.getAllParkingLot(0,15)).isEqualTo(parkingLotPage);
     }
+
+    @Test
+    public void should_get_parking_lot_by_name() {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Genrev");
+        parkingLot.setCapacity(1);
+        parkingLot.setLocation("Santa Rosa");
+
+        when(parkingLotRepository.findByName("Genrev")).thenReturn(parkingLot);
+
+        Assertions.assertThat(parkingLotService.getParkingLotByName("Genrev")).isEqualTo(parkingLot);
+    }
 }

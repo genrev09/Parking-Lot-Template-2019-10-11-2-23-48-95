@@ -34,4 +34,12 @@ public class ParkingLotController {
         return parkingLotService.getAllParkingLot(page,pageSize);
     }
 
+    @GetMapping(path = "/{name}", headers = {"Content-type=application/json"})
+    public ResponseEntity getParkingLotByName(@PathVariable("name") String name){
+        ParkingLot parkingLot = parkingLotService.getParkingLotByName(name);
+        if (parkingLot != null)
+            return new ResponseEntity<>(parkingLot,HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

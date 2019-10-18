@@ -76,7 +76,7 @@ public class ParkingLotControllerTest {
     }
 
     @Test
-    public void should_get_all_company() throws Exception {
+    public void should_get_all_parking_lot() throws Exception {
         List<ParkingLot> parkingLotList = new ArrayList<>();
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName("Genrev");
@@ -92,5 +92,33 @@ public class ParkingLotControllerTest {
         result.andExpect(status().isOk())
         .andExpect(jsonPath("$.content[0].location",is(parkingLot.getLocation())))
         .andExpect(jsonPath("$.content[0].name",is(parkingLot.getName())));
+    }
+
+    @Test
+    public void should_get_parking_lot_by_name() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Genrev");
+        parkingLot.setCapacity(1);
+        parkingLot.setLocation("Santa Rosa");
+
+        when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(parkingLot);
+        ResultActions result = mockMvc.perform(get("/parkinglots/{name}","Genrev")
+                .contentType(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.location",is(parkingLot.getLocation())))
+                .andExpect(jsonPath("$.name",is(parkingLot.getName())));
+    }
+
+    @Test
+    public void should_not_get_parking_lot_when_invalid_name() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Nicole");
+        parkingLot.setCapacity(1);
+        parkingLot.setLocation("Santa Rosa");
+
+        when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(null);
+        ResultActions result = mockMvc.perform(get("/parkinglots/{name}","Genrev")
+                .contentType(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isNotFound());
     }
 }
