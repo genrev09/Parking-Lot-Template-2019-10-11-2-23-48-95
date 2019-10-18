@@ -16,7 +16,7 @@ public class ParkingLotController {
     ParkingLotService parkingLotService;
 
     @PostMapping(headers = {"Content-type=application/json"})
-    public ResponseEntity addParkingLot(ParkingLot parkingLot){
+    public ResponseEntity addParkingLot(@RequestBody ParkingLot parkingLot){
         if (parkingLotService.addParkingLot(parkingLot))
             return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
