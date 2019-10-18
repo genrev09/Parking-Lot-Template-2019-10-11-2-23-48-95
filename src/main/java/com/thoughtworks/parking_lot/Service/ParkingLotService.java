@@ -5,6 +5,8 @@ import com.thoughtworks.parking_lot.core.ParkingLot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ParkingLotService {
 
@@ -14,6 +16,16 @@ public class ParkingLotService {
     public boolean addParkingLot(ParkingLot parkingLot){
         if(parkingLotRepository.save(parkingLot) != null)
             return true;
+        return false;
+    }
+
+    public boolean deleteParkingLot(String parkingLotName){
+        ParkingLot parkingLot = parkingLotRepository.findByName(parkingLotName);
+        List<ParkingLot> parkingLotList = parkingLotRepository.findAll();
+        if (parkingLotList.contains(parkingLot)) {
+            parkingLotRepository.delete(parkingLot);
+            return true;
+        }
         return false;
     }
 }

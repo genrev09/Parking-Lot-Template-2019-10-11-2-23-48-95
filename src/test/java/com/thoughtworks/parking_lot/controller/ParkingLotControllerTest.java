@@ -34,7 +34,7 @@ public class ParkingLotControllerTest {
     @Test
     public void should_add_parking_lot() throws Exception {
         when(parkingLotService.addParkingLot(any())).thenReturn(true);
-        ResultActions result = mockMvc.perform(post("/parkinglot")
+        ResultActions result = mockMvc.perform(post("/parkinglots")
                 .content(new ObjectMapper().writeValueAsString(new ParkingLot()))
                 .contentType(MediaType.APPLICATION_JSON));
         result.andExpect(status().isCreated());
@@ -43,7 +43,7 @@ public class ParkingLotControllerTest {
     @Test
     public void should_not_add_parking_lot_when_invalid_parking_lot() throws Exception {
         when(parkingLotService.addParkingLot(any())).thenReturn(false);
-        ResultActions result = mockMvc.perform(post("/parkinglot")
+        ResultActions result = mockMvc.perform(post("/parkinglots")
                 .content(new ObjectMapper().writeValueAsString(null))
                 .contentType(MediaType.APPLICATION_JSON));
         result.andExpect(status().isBadRequest());

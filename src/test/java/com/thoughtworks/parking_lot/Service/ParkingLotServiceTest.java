@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -46,6 +49,23 @@ public class ParkingLotServiceTest {
         when(parkingLotRepository.save(parkingLot)).thenReturn(null);
 
         Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(false);
+    }
+
+    @Test
+    public void should_delete_parking_lot() {
+        List<ParkingLot> parkingLotList = new ArrayList<>();
+
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Genrev");
+        parkingLot.setCapacity(1);
+        parkingLot.setLocation("Santa Rosa");
+
+        parkingLotList.add(parkingLot);
+
+        when(parkingLotRepository.findByName("Genrev")).thenReturn(parkingLot);
+        when(parkingLotRepository.findAll()).thenReturn(parkingLotList);
+
+        Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(true);
     }
 
 }
