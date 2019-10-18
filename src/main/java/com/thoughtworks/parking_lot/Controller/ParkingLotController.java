@@ -37,11 +37,9 @@ public class ParkingLotController {
     }
 
     @GetMapping(path = "/{name}", headers = {"Content-type=application/json"})
-    public ResponseEntity getParkingLotByName(@PathVariable("name") String name){
-        ParkingLot parkingLot = parkingLotService.getParkingLotByName(name);
-        if (parkingLot != null)
-            return new ResponseEntity<>(parkingLot,HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @ResponseStatus(code = HttpStatus.OK)
+    public ParkingLot getParkingLotByName(@PathVariable("name") String name) throws NotFoundException {
+        return parkingLotService.getParkingLotByName(name);
     }
 
     @PatchMapping(path = "/{name}", headers = {"Content-type=application/json"})

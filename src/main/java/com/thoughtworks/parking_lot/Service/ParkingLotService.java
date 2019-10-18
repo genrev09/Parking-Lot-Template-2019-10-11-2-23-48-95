@@ -34,8 +34,11 @@ public class ParkingLotService {
         return parkingLotRepository.findAll(PageRequest.of(page,pagesize));
     }
 
-    public ParkingLot getParkingLotByName(String name){
-        return parkingLotRepository.findByName(name);
+    public ParkingLot getParkingLotByName(String name) throws NotFoundException {
+        ParkingLot parkingLot = parkingLotRepository.findByName(name);
+        if (parkingLot != null)
+            return parkingLot;
+        throw new NotFoundException(INVALID_NAME);
     }
 
     public ParkingLot updateParkingLotCapacity(String name, ParkingLot updatedParkingLot) throws NotFoundException {

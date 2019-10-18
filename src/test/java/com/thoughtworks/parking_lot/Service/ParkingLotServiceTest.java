@@ -92,7 +92,7 @@ public class ParkingLotServiceTest {
     }
 
     @Test
-    public void should_get_parking_lot_by_name() {
+    public void should_get_parking_lot_by_name() throws NotFoundException {
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName("Genrev");
         parkingLot.setCapacity(1);

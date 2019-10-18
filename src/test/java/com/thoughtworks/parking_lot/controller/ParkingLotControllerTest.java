@@ -124,7 +124,7 @@ public class ParkingLotControllerTest {
         parkingLot.setCapacity(1);
         parkingLot.setLocation("Santa Rosa");
 
-        when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(null);
+        when(parkingLotService.getParkingLotByName("Genrev")).thenThrow(NotFoundException.class);
         ResultActions result = mockMvc.perform(get("/parkinglots/{name}","Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
 
