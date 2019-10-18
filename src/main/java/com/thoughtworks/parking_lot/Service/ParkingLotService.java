@@ -21,8 +21,7 @@ public class ParkingLotService {
 
     public boolean deleteParkingLot(String parkingLotName){
         ParkingLot parkingLot = parkingLotRepository.findByName(parkingLotName);
-        List<ParkingLot> parkingLotList = parkingLotRepository.findAll();
-        if (parkingLotList.contains(parkingLot)) {
+        if (parkingLot != null) {
             parkingLotRepository.delete(parkingLot);
             return true;
         }

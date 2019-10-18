@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -53,8 +52,16 @@ public class ParkingLotControllerTest {
     @Test
     public void should_delete_parking_lot() throws Exception {
         when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(true);
-        ResultActions result = mockMvc.perform(delete("/parkinglots/Genrev")
+        ResultActions result = mockMvc.perform(delete("/parkinglots/{name}", "Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_not_delete_parking_lot_when_invalid_name() throws Exception {
+        when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(false);
+        ResultActions result = mockMvc.perform(delete("/parkinglots/{name}", "Genrev")
+                .contentType(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isBadRequest());
     }
 }

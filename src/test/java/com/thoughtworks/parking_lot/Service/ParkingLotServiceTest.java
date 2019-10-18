@@ -53,19 +53,22 @@ public class ParkingLotServiceTest {
 
     @Test
     public void should_delete_parking_lot() {
-        List<ParkingLot> parkingLotList = new ArrayList<>();
-
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName("Genrev");
         parkingLot.setCapacity(1);
         parkingLot.setLocation("Santa Rosa");
 
-        parkingLotList.add(parkingLot);
-
         when(parkingLotRepository.findByName("Genrev")).thenReturn(parkingLot);
-        when(parkingLotRepository.findAll()).thenReturn(parkingLotList);
 
         Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(true);
+    }
+
+    @Test
+    public void should_not_delete_invalid_parking_lot_name() {
+
+        when(parkingLotRepository.findByName("Genrev")).thenReturn(null);
+
+        Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(false);
     }
 
 }
