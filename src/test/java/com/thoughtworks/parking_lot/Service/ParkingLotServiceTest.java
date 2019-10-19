@@ -4,6 +4,7 @@ import com.thoughtworks.parking_lot.Repository.ParkingLotRepository;
 import com.thoughtworks.parking_lot.core.ParkingLot;
 import javassist.NotFoundException;
 import org.assertj.core.api.Assertions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,10 @@ public class ParkingLotServiceTest {
 
         when(parkingLotRepository.save(parkingLot)).thenReturn(parkingLot);
 
-        Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(true);
+        Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(parkingLotService.PARKING_LOT_CREATED);
     }
 
-    @Test
+    @Test(expected = ConstraintViolationException.class)
     public void should_not_add_existing_parking_lot_name() {
 
         ParkingLot parkingLot = new ParkingLot();
@@ -51,9 +52,9 @@ public class ParkingLotServiceTest {
         parkingLot.setCapacity(1);
         parkingLot.setLocation("Santa Rosa");
 
-        when(parkingLotRepository.save(parkingLot)).thenReturn(null);
+        when(parkingLotRepository.save(parkingLot)).thenThrow(ConstraintViolationException.class);
 
-        Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(false);
+        parkingLotService.addParkingLot(parkingLot);
     }
 
     @Test

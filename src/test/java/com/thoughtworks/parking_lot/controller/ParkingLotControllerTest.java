@@ -5,6 +5,7 @@ import com.thoughtworks.parking_lot.Controller.ParkingLotController;
 import com.thoughtworks.parking_lot.Service.ParkingLotService;
 import com.thoughtworks.parking_lot.core.ParkingLot;
 import javassist.NotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.persistence.RollbackException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ParkingLotControllerTest {
 
     private static final String DELETED_PARKINGLOT = "Parking lot successfully deleted.";
+    private static final String PARKING_LOT_CREATED = "Parking Lot Created";
+
     @MockBean
     ParkingLotService parkingLotService;
 
@@ -46,7 +50,7 @@ public class ParkingLotControllerTest {
 
     @Test
     public void should_add_parking_lot() throws Exception {
-        when(parkingLotService.addParkingLot(any())).thenReturn(true);
+        when(parkingLotService.addParkingLot(any())).thenReturn(PARKING_LOT_CREATED);
         ResultActions result = mockMvc.perform(post("/parkinglots")
                 .content(objectMapper.writeValueAsString(new ParkingLot()))
                 .contentType(MediaType.APPLICATION_JSON));
@@ -55,10 +59,26 @@ public class ParkingLotControllerTest {
     }
 
     @Test
-    public void should_not_add_parking_lot_when_invalid_parking_lot() throws Exception {
-        when(parkingLotService.addParkingLot(any())).thenReturn(false);
+    public void should_not_add_parking_lot_when_parking_lot_name_already_exists() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Genrev");
+
+        when(parkingLotService.addParkingLot(any())).thenThrow(ConstraintViolationException.class);
         ResultActions result = mockMvc.perform(post("/parkinglots")
-                .content(objectMapper.writeValueAsString(null))
+                .content(objectMapper.writeValueAsString(parkingLot))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void should_not_add_parking_lot_when_parking_lot_capacity_less_than_zero() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setCapacity(-1);
+
+        when(parkingLotService.addParkingLot(any())).thenThrow(RollbackException.class);
+        ResultActions result = mockMvc.perform(post("/parkinglots")
+                .content(objectMapper.writeValueAsString(parkingLot))
                 .contentType(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isBadRequest());

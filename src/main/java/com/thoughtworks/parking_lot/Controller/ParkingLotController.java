@@ -18,10 +18,9 @@ public class ParkingLotController {
     ParkingLotService parkingLotService;
 
     @PostMapping(headers = {"Content-type=application/json"})
-    public ResponseEntity addParkingLot(@RequestBody ParkingLot parkingLot){
-        if (parkingLotService.addParkingLot(parkingLot))
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public String addParkingLot(@RequestBody ParkingLot parkingLot){
+        return parkingLotService.addParkingLot(parkingLot);
     }
 
     @DeleteMapping(path = "/{name}", headers = {"Content-type=application/json"})
