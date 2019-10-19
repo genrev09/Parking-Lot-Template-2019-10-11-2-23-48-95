@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class ParkingLotService {
     public static final String INVALID_NAME = "Parking lot name does not exists!";
     public static final String PARKING_LOT_CREATED = "Parking Lot Created";
+    public static final String PARKING_LOT_SUCCESSFULLY_DELETED = "Parking lot successfully deleted.";
 
     @Autowired
     ParkingLotRepository parkingLotRepository;
@@ -25,7 +26,7 @@ public class ParkingLotService {
         ParkingLot parkingLot = parkingLotRepository.findByName(parkingLotName);
         if (parkingLot != null) {
             parkingLotRepository.delete(parkingLot);
-            return "Parking lot successfully deleted.";
+            return PARKING_LOT_SUCCESSFULLY_DELETED;
         }
         throw new NotFoundException(INVALID_NAME);
     }
