@@ -25,10 +25,9 @@ public class ParkingLotController {
     }
 
     @DeleteMapping(path = "/{name}", headers = {"Content-type=application/json"})
-    public ResponseEntity deleteParkingLot(@PathVariable("name") String name){
-        if (parkingLotService.deleteParkingLot(name))
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @ResponseStatus(code = HttpStatus.OK)
+    public String deleteParkingLot(@PathVariable("name") String name) throws NotFoundException {
+        return parkingLotService.deleteParkingLot(name);
     }
 
     @GetMapping(headers = {"Content-type=application/json"})

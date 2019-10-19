@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(profiles = "test")
 public class ParkingLotControllerTest {
 
+    private static final String DELETED_PARKINGLOT = "Parking lot successfully deleted.";
     @MockBean
     ParkingLotService parkingLotService;
 
@@ -65,7 +66,7 @@ public class ParkingLotControllerTest {
 
     @Test
     public void should_delete_parking_lot() throws Exception {
-        when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(true);
+        when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(DELETED_PARKINGLOT);
         ResultActions result = mockMvc.perform(delete("/parkinglots/{name}", "Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -74,11 +75,11 @@ public class ParkingLotControllerTest {
 
     @Test
     public void should_not_delete_parking_lot_when_invalid_name() throws Exception {
-        when(parkingLotService.deleteParkingLot("Genrev")).thenReturn(false);
+        when(parkingLotService.deleteParkingLot("Genrev")).thenThrow(NotFoundException.class);
         ResultActions result = mockMvc.perform(delete("/parkinglots/{name}", "Genrev")
                 .contentType(MediaType.APPLICATION_JSON));
 
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
     }
 
     @Test

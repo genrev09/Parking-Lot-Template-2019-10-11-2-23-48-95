@@ -21,13 +21,13 @@ public class ParkingLotService {
         return false;
     }
 
-    public boolean deleteParkingLot(String parkingLotName){
+    public String deleteParkingLot(String parkingLotName) throws NotFoundException {
         ParkingLot parkingLot = parkingLotRepository.findByName(parkingLotName);
         if (parkingLot != null) {
             parkingLotRepository.delete(parkingLot);
-            return true;
+            return "Parking lot successfully deleted.";
         }
-        return false;
+        throw new NotFoundException(INVALID_NAME);
     }
 
     public Page<ParkingLot> getAllParkingLot(int page, int pagesize){

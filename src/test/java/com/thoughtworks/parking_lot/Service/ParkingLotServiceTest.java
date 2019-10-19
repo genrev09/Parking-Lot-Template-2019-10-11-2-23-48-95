@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ParkingLotServiceTest {
+    private static final String DELETED_PARKINGLOT = "Parking lot successfully deleted.";
 
     @MockBean
     private ParkingLotRepository parkingLotRepository;
@@ -56,7 +57,7 @@ public class ParkingLotServiceTest {
     }
 
     @Test
-    public void should_delete_parking_lot() {
+    public void should_delete_parking_lot() throws NotFoundException {
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName("Genrev");
         parkingLot.setCapacity(1);
@@ -64,15 +65,14 @@ public class ParkingLotServiceTest {
 
         when(parkingLotRepository.findByName("Genrev")).thenReturn(parkingLot);
 
-        Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(true);
+        Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo("Parking lot successfully deleted.");
     }
 
-    @Test
-    public void should_not_delete_invalid_parking_lot_name() {
+    @Test(expected = NotFoundException.class)
+    public void should_not_delete_invalid_parking_lot_name() throws NotFoundException {
 
         when(parkingLotRepository.findByName("Genrev")).thenReturn(null);
-
-        Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(false);
+        parkingLotService.deleteParkingLot("Genrev");
     }
 
     @Test
