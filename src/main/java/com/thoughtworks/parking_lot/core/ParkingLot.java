@@ -2,6 +2,7 @@
 package com.thoughtworks.parking_lot.core;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Entity
 public class ParkingLot {
@@ -17,6 +18,9 @@ public class ParkingLot {
 
     @Column(unique = true)
     private String name;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List <Order> orderList;
 
     public void setLocation(String location) {
         this.location = location;
@@ -40,5 +44,13 @@ public class ParkingLot {
 
     public String getName() {
         return name;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
     }
 }

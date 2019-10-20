@@ -5,14 +5,13 @@ import org.springframework.data.annotation.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int OrderNumber;
+    private Integer id;
     private String parkingLotName;
     private int plateNumber;
     private Date creationTime;
@@ -48,12 +47,12 @@ public class Order {
         return creationTime;
     }
 
-    public int getOrderNumber() {
-        return OrderNumber;
+    public Integer getId() {
+        return id;
     }
 
-    public void setOrderNumber(int orderNumber) {
-        OrderNumber = orderNumber;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Date getCloseTime() {
