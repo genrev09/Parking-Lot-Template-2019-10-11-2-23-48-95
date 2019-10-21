@@ -52,7 +52,5 @@ public class OrderServiceTest {
         Assertions.assertThat(actualOrder.getParkingLotName()).isEqualTo(parkingLot.getName());
         Assertions.assertThat(actualOrder.getPlateNumber()).isEqualTo(order.getPlateNumber());
 
-
-
     }
 }
