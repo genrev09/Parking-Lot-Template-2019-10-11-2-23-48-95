@@ -5,23 +5,26 @@ import com.thoughtworks.parking_lot.core.ParkingLot;
 import javassist.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.hibernate.exception.ConstraintViolationException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(ParkingLotService.class)
+@ActiveProfiles(profiles = "test")
 public class ParkingLotServiceTest {
 
     @MockBean
@@ -43,7 +46,7 @@ public class ParkingLotServiceTest {
         Assertions.assertThat(parkingLotService.addParkingLot(parkingLot)).isEqualTo(parkingLotService.PARKING_LOT_CREATED);
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void should_not_add_existing_parking_lot_name() {
 
         ParkingLot parkingLot = new ParkingLot();
@@ -53,7 +56,10 @@ public class ParkingLotServiceTest {
 
         when(parkingLotRepository.save(parkingLot)).thenThrow(ConstraintViolationException.class);
 
-        parkingLotService.addParkingLot(parkingLot);
+        assertThrows(ConstraintViolationException.class, () -> {
+            parkingLotService.addParkingLot(parkingLot);
+        });
+
     }
 
     @Test
@@ -68,11 +74,14 @@ public class ParkingLotServiceTest {
         Assertions.assertThat(parkingLotService.deleteParkingLot("Genrev")).isEqualTo(parkingLotService.PARKING_LOT_SUCCESSFULLY_DELETED);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void should_not_delete_invalid_parking_lot_name() throws NotFoundException {
 
         when(parkingLotRepository.findByName("Genrev")).thenReturn(null);
-        parkingLotService.deleteParkingLot("Genrev");
+        assertThrows(NotFoundException.class, () ->{
+            parkingLotService.deleteParkingLot("Genrev");
+        });
+
     }
 
     @Test

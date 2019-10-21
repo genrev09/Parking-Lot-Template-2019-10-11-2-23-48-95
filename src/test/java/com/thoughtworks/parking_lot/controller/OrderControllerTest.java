@@ -20,8 +20,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -71,4 +75,38 @@ public class OrderControllerTest {
 
         result.andExpect(status().isCreated());
     }
+
+    @Test
+    public void should_update_order() throws Exception {
+        Order acceptedOrder = new Order();
+        acceptedOrder.setParkingLotName("Genrev");
+        acceptedOrder.setPlateNumber(234);
+
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(acceptedOrder);
+
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setCapacity(3);
+        parkingLot.setName("Genrev");
+        parkingLot.setOrderList(orderList);
+
+        Order order = new Order();
+        order.setPlateNumber(123);
+
+        Order savedOrder = new Order();
+        savedOrder.setParkingLotName(parkingLot.getName());
+        savedOrder.setPlateNumber(order.getPlateNumber());
+
+        when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(parkingLot);
+        when(orderService.updateOrder(123)).thenReturn(savedOrder);
+
+        ResultActions result = mockMvc.perform(patch("/parkinglots/{name}/orders/{plateNumber}","Genrev",123)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isCreated())
+        .andExpect(jsonPath("$.parkingLotName",is(savedOrder.getParkingLotName())))
+                .andExpect(jsonPath("$.plateNumber",is(savedOrder.getPlateNumber())))
+                .andExpect(jsonPath("$.orderStatus",is(savedOrder.getOrderStatus())));
+    }
+
 }

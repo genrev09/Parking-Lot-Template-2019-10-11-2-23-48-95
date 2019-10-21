@@ -26,4 +26,13 @@ public class OrderController {
         ParkingLot parkingLot = parkingLotService.getParkingLotByName(name);
         return orderService.createOrder(parkingLot,order);
     }
+
+    @PatchMapping(path = "/{plateNumber}",headers = {"Content-type=application/json"})
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseBody
+    public Order updateOrder(@PathVariable("name") String name,
+                             @PathVariable("plateNumber") int plateNumber) throws NotFoundException {
+        ParkingLot parkingLot = parkingLotService.getParkingLotByName(name);
+        return orderService.updateOrder(plateNumber);
+    }
 }

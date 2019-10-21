@@ -66,9 +66,10 @@ public class OrderServiceTest {
         when(orderRepository.findOneByPlatenumber(234)).thenReturn(order);
         when(orderRepository.save(any())).thenReturn(order);
 
-        String expectedOutput = orderService.updateOrder(234);
+        Order expectedOrder = orderService.updateOrder(234);
 
-        Assertions.assertThat(expectedOutput).isEqualTo(orderService.ORDER_UPDATED);
+        Assertions.assertThat(expectedOrder.getPlateNumber()).isEqualTo(order.getPlateNumber());
+        Assertions.assertThat(expectedOrder.getParkingLotName()).isEqualTo(order.getParkingLotName());
     }
 
     @Test

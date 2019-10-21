@@ -13,7 +13,6 @@ import java.util.Date;
 public class OrderService {
     public static final String CLOSED = "Closed";
     public static final String ORDER_NAME_DOES_NOT_EXISTS = "Order name does not exists!";
-    public static final String ORDER_UPDATED = "Order updated!";
     @Autowired
     OrderRepository orderRepository;
 
@@ -26,13 +25,13 @@ public class OrderService {
         return null;
     }
 
-    public String updateOrder(int plateNumber) throws NotFoundException {
+    public Order updateOrder(int plateNumber) throws NotFoundException {
         Order order = orderRepository.findOneByPlatenumber(plateNumber);
         if (order != null){
             order.setOrderStatus("Closed");
             order.setCloseTime(new Date());
             orderRepository.save(order);
-            return ORDER_UPDATED;
+            return order;
         }
         throw new NotFoundException(ORDER_NAME_DOES_NOT_EXISTS);
     }
