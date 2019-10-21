@@ -13,16 +13,17 @@ import java.util.Date;
 public class OrderService {
     public static final String CLOSED = "Closed";
     public static final String ORDER_NAME_DOES_NOT_EXISTS = "Order name does not exists!";
+    public static final String PARKING_LOT_IS_FULL = "Parking lot is full. Please try again later.";
     @Autowired
     OrderRepository orderRepository;
 
-    public Order createOrder(ParkingLot parkingLot, Order order){
+    public Order createOrder(ParkingLot parkingLot, Order order) throws Exception {
         if(parkingLot.getOrderList().size() < parkingLot.getCapacity()){
             order.setParkingLotName(parkingLot.getName());
             orderRepository.save(order);
             return order;
         }
-        return null;
+        throw new Exception(PARKING_LOT_IS_FULL);
     }
 
     public Order updateOrder(int plateNumber) throws NotFoundException {

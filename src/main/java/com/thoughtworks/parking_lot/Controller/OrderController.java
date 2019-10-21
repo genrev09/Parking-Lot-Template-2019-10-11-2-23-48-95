@@ -22,7 +22,7 @@ public class OrderController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @ResponseBody
     public Order createOrder(@PathVariable("name") String name,
-                                @RequestBody Order order) throws NotFoundException {
+                                @RequestBody Order order) throws Exception {
         ParkingLot parkingLot = parkingLotService.getParkingLotByName(name);
         return orderService.createOrder(parkingLot,order);
     }

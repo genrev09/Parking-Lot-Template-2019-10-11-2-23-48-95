@@ -1,6 +1,6 @@
 package com.thoughtworks.parking_lot.core;
 
-public class ParkingLotException {
+public class ModelException {
     private int code;
     private String message;
 

@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,4 +109,26 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.orderStatus",is(savedOrder.getOrderStatus())));
     }
 
+    @Test
+    public void should_not_create_order_when_parking_lot_is_full() throws Exception {
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(new Order());
+
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setCapacity(1);
+        parkingLot.setName("Genrev");
+        parkingLot.setOrderList(orderList);
+
+        Order order = new Order();
+        order.setPlateNumber(123);
+
+        when(parkingLotService.getParkingLotByName("Genrev")).thenReturn(parkingLot);
+        when(orderService.createOrder(any(),any())).thenThrow(Exception.class);
+
+        ResultActions result = mockMvc.perform(post("/parkinglots/{name}/orders","Genrev")
+                .content(objectMapper.writeValueAsString(order))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isServiceUnavailable());
+    }
 }

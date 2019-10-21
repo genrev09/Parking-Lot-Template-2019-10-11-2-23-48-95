@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +32,7 @@ public class OrderServiceTest {
     OrderService orderService;
 
     @Test
-    public void should_create_an_order() {
+    public void should_create_an_order() throws Exception {
         Order acceptedOrder = new Order();
         acceptedOrder.setParkingLotName("Genrev");
         acceptedOrder.setPlateNumber(234);
@@ -76,5 +77,27 @@ public class OrderServiceTest {
     public void should_not_update_an_order_when_plate_number_is_invalid(){
         when(orderRepository.findOneByPlatenumber(123)).thenReturn(null);
         Assertions.assertThatThrownBy(() -> orderService.updateOrder(123));
+    }
+
+    @Test
+    public void should_not_create_an_order_when_parking_lot_is_full() throws Exception {
+        Order acceptedOrder = new Order();
+        acceptedOrder.setParkingLotName("Genrev");
+        acceptedOrder.setPlateNumber(234);
+
+        List<Order> orderList = new ArrayList<>();
+        orderList.add(acceptedOrder);
+
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setCapacity(1);
+        parkingLot.setName("Genrev");
+        parkingLot.setOrderList(orderList);
+
+        Order order = new Order();
+        order.setPlateNumber(123);
+
+        assertThrows(Exception.class, () ->{
+            orderService.createOrder(parkingLot,order);
+        });
     }
 }
