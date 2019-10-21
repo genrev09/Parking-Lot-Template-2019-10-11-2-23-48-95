@@ -4,4 +4,5 @@ import com.thoughtworks.parking_lot.core.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
+    Order findOneByPlatenumber(Integer orderName);
 }

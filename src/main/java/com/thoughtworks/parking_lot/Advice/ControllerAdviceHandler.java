@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.persistence.RollbackException;
 
 @ControllerAdvice
-public class ParkingLotControllerAdvice {
+public class ControllerAdviceHandler {
     public static final String PARKING_LOT_NAME_ALREADY_EXISTS = ". Parking Lot name already exists.";
     private ParkingLotException parkingLotException;
 

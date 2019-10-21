@@ -3,6 +3,7 @@ package com.thoughtworks.parking_lot.Service;
 import com.thoughtworks.parking_lot.Repository.OrderRepository;
 import com.thoughtworks.parking_lot.core.Order;
 import com.thoughtworks.parking_lot.core.ParkingLot;
+import javassist.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -51,6 +53,27 @@ public class OrderServiceTest {
 
         Assertions.assertThat(actualOrder.getParkingLotName()).isEqualTo(parkingLot.getName());
         Assertions.assertThat(actualOrder.getPlateNumber()).isEqualTo(order.getPlateNumber());
+    }
 
+    @Test
+    public void should_update_an_order() throws NotFoundException {
+        Order order = new Order();
+        order.setParkingLotName("Genrev");
+        order.setPlateNumber(234);
+        order.setOrderStatus("Closed");
+
+
+        when(orderRepository.findOneByPlatenumber(234)).thenReturn(order);
+        when(orderRepository.save(any())).thenReturn(order);
+
+        String expectedOutput = orderService.updateOrder(234);
+
+        Assertions.assertThat(expectedOutput).isEqualTo(orderService.ORDER_UPDATED);
+    }
+
+    @Test
+    public void should_not_update_an_order_when_plate_number_is_invalid(){
+        when(orderRepository.findOneByPlatenumber(123)).thenReturn(null);
+        Assertions.assertThatThrownBy(() -> orderService.updateOrder(123));
     }
 }
