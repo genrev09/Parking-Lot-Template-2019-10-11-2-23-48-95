@@ -21,6 +21,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -56,6 +57,33 @@ public class PackageControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.packageNum",is(myPackage.getPackageNum())))
                 .andExpect(jsonPath("$.receiver",is(myPackage.getReceiver())));
+    }
+
+    @Test
+    void should_get_all_package() throws Exception {
+        List<Package> packageList = new ArrayList<>();
+        Package myPackage = new Package();
+        myPackage.setPackageNum(12312312);
+        myPackage.setReceiver("Hanxian");
+        myPackage.setPhone(1231231231);
+
+        Package myPackage2 = new Package();
+        myPackage.setPackageNum(23456);
+        myPackage.setReceiver("Woody");
+        myPackage.setPhone(111123);
+
+        packageList.add(myPackage);
+        packageList.add(myPackage2);
+
+        when(packageService.getAllPackage()).thenReturn(packageList);
+
+        ResultActions result = mockMvc.perform(get("/minipackage")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].packageNum", is(myPackage.getPackageNum())));
     }
 
 
